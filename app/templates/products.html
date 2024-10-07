@@ -8,6 +8,7 @@
             <th>Name</th>
             <th>Tag</th>
             <th>Price</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -19,8 +20,14 @@
             <td>{{ product['name'] }}</td>
             <td>{{ product['tag'] }}</td>
             <td>${{ product['price'] }}</td>
+            <td>
+                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-title="This feature isn't available yet">
+                    <button type="button" class="btn btn-primary" disabled>Add to Cart</button>
+                </span>
+            </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+<br><br>
 {% endblock %}

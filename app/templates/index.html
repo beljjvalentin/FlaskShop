@@ -2,4 +2,38 @@
 {% block content %}
 <h1>Welcome to My Shop</h1>
 <p>Explore our amazing collection of products!</p>
+
+<div class="container px-4 py-5" id="hanging-icons">
+    <h2 class="pb-2 border-bottom">Our features</h2>
+    <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+      <div class="col d-flex align-items-start">
+        <div>
+          <h2><a href="/products"><i class="bi bi-box-seam"></i></a> Best products</h2>
+          <p>Our products are of the best quality, and we offer an extended warranty to all our customers.</p>
+          <a href="/products" class="btn btn-primary">
+            Go to Products
+          </a>
+        </div>
+      </div>
+      <div class="col d-flex align-items-start">
+        <div>
+          <h2><a href="/products"><i class="bi bi-123"></i></a> Great variety</h2>
+          <p>We have the greatest collection of the electronics products from all known brands across the world.</p>
+          <a href="/products" class="btn btn-primary">
+            Check our collection
+          </a>
+        </div>
+      </div>
+      <div class="col d-flex align-items-start">
+        <div>
+          <h2><a href="/products"><i class="bi bi-tags"></i></a> Competitive pricing</h2>
+          <p>Our pricing will surprise you by how cheap everything is. Our products are purchased directly from suppliers</p>
+          <a href="/products" class="btn btn-primary">
+            See our prices
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
 {% endblock %}
