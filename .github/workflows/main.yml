@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # Uses an Ubuntu environment, which is Debian-based
+    runs-on: self-hosted  # Uses an Ubuntu environment, which is Debian-based
 
     steps:
       - name: Check out repository
@@ -36,7 +36,7 @@ jobs:
           pytest  # Adjust if you're using another testing framework
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: build
     if: github.ref == 'refs/heads/main'  # Only deploy from main branch
 
