@@ -1,69 +1,57 @@
-name: Flask CI/CD Pipeline
-
+# Trigger of the pipeline
 on:
+  # Initiate the pipeline when there is a push event in the main branch
   push:
     branches:
-      - main  # Triggers the pipeline on pushes to the main branch
-  pull_request:
-    branches:
-      - main  # Triggers the pipeline on pull requests to the main branch
+      - main
+
 
 jobs:
-  build:
-    runs-on: self-hosted  # Uses an Ubuntu environment, which is Debian-based
-
+  # Stage 1: Building the Docker image
+  build-docker-image:
+    name: Build the application Docker image
+    runs-on: ip-172-31-16-191  # Using the self-hosted runner
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v2  # Clones the project into the working directory
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'  # Adjust to your Python version
-
-      - name: Install dependencies
+      - name: Build Docker Image
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          docker build -t flask-app-1:v1.0.0 -f Dockerfile .
 
-      - name: Create .env file
-        run: |
-          echo "MONGODB_USERNAME=${{ secrets.MONGODB_USERNAME }}" >> .env
-          echo "MONGODB_PASSWORD=${{ secrets.MONGODB_PASSWORD }}" >> .env
+#  # Stage 2: Unit testing the application
+#  test:
+#    name: Unit testing of the application
+#    needs: [build-docker-image]
+#    runs-on: aws-debian-runner-1
+#    steps:
+#      - name: Checkout repository
+#        uses: actions/checkout@v2
+#
+#      - name: Set up and run tests in a virtual environment
+#        shell: bash
+#        run: |
+#          # Create a virtual environment in a directory called venv
+#          python3 -m venv venv
+#
+#          # Activate the virtual environment
+#          source venv/bin/activate
+#
+#          # Upgrade pip and install dependencies
+#          pip install --upgrade pip
+#          pip install flask pytest pymongo
+#
+#          # Run unit tests
+#          pytest tests/
 
-      - name: Run tests
-        run: |
-          pytest  # Adjust if you're using another testing framework
-
-  deploy:
-    runs-on: self-hosted
-    needs: build
-    if: github.ref == 'refs/heads/main'  # Only deploy from main branch
-
+  # Stage 3: Deploy the Docker image
+  deploy-docker-image:
+    name: Deploy the Flask image
+    needs: [build-docker-image]
+    runs-on: ip-172-31-16-191  # Using the self-hosted runner
+    environment: development  # This tells GitHub where to get the secrets
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-
-      - name: Install dependencies
+      - name: Deploy the image
+        # docker rm -f flask-app-1 || true
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Create .env file
-        run: |
-          echo "MONGODB_USERNAME=${{ secrets.MONGODB_USERNAME }}" >> .env
-          echo "MONGODB_PASSWORD=${{ secrets.MONGODB_PASSWORD }}" >> .env
-
-      - name: Deploy to Server
-        env:
-          FLASK_ENV: production
-          FLASK_APP: app.py  # Change to your entry point file
-        run: |
-          # Deploy commands go here
-          # Example: Run Flask server locally or deploy via SSH/SFTP to your server
-          # ssh username@server "cd /path/to/app && git pull && systemctl restart flask-app"
+          docker run -d -p 5000:5000 -e MONGODB_USERNAME=${{ secrets.MONGODB_USERNAME }} -e MONGODB_PASSWORD=${{ secrets.MONGODB_PASSWORD }} flask-app-1:v1.0.0  # -d runs the container in the background
