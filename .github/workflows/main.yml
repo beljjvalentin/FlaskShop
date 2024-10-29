@@ -56,10 +56,11 @@ jobs:
           docker rm -f flask-app-1 || true
 
       - name: Deploy the image
-        #
+        # -d runs the container in the background
         run: |
-          docker run -d -p 8080:5000 \
+          docker run -d --name flask-app-1 -p 8080:5000 \
           -e MONGODB_USERNAME=${{ secrets.MONGODB_USERNAME }} \
-          -e MONGODB_PASSWORD=${{ secrets.MONGODB_PASSWORD }} \ 
-          flask-app-1:v1.0.0  # -d runs the container in the background
+          -e MONGODB_PASSWORD=${{ secrets.MONGODB_PASSWORD }} \
+          flask-app-1:v1.0.0
+        
 
