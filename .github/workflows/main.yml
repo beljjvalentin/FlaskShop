@@ -10,7 +10,7 @@ jobs:
   # Stage 1: Building the Docker image
   build-docker-image:
     name: Build the application Docker image
-    runs-on: ip-172-31-16-191  # Using the self-hosted runner
+    runs-on: self-hosted  # Using the self-hosted runner
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2  # Clones the project into the working directory
@@ -48,7 +48,7 @@ jobs:
   deploy-docker-image:
     name: Deploy the Flask image
     needs: [build-docker-image]
-    runs-on: ip-172-31-16-191  # Using the self-hosted runner
+    runs-on: self-hosted # Using the self-hosted runner
     environment: development  # This tells GitHub where to get the secrets
     steps:
       - name: Deploy the image
