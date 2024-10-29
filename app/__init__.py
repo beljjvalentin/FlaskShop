@@ -15,7 +15,7 @@ flask_app = Flask(__name__)
 flask_app.static_folder = 'static'
 
 # MongoDB Atlas Connection
-client = MongoClient(f"mongodb+srv://valentin:dLnI23EfvYpg3pua@cluster0.flk7i.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+client = MongoClient(f"mongodb+srv://{MONGODB_USERNAME}:{MONGODB_PASSWORD}@cluster0.flk7i.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 db = client.get_database("shop_db")  # Replace "app" with your database name
 
 products_collection = db.products  # Replace products with your collection name

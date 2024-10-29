@@ -9,7 +9,9 @@ WORKDIR /
 COPY . .
 
 # To install the dependency
-RUN pip install flask
+# RUN pip install flask
+COPY requirements.txt requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # To open the port 5000 in the container
 EXPOSE 5000
