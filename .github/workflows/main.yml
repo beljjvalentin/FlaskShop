@@ -16,6 +16,7 @@ jobs:
   build-docker-image:
     name: Build the application Docker image
     runs-on: self-hosted  # Using the self-hosted runner
+    environment: development # this allows GitHub to access secrets in the development environment
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2  # Clones the project into the working directory
