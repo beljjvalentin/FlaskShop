@@ -28,35 +28,43 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Build Docker Image
+      - name: Build Main Docker Image
         run: |
           docker build -t $DOCKERHUB_NAMESPACE/$DOCKERHUB_REPOSITORY:$IMAGE_VERSION -f Dockerfile .
           docker push $DOCKERHUB_NAMESPACE/$DOCKERHUB_REPOSITORY:$IMAGE_VERSION
 
-#  # Stage 2: Unit testing the application
-#  test:
-#    name: Unit testing of the application
-#    needs: [build-docker-image]
-#    runs-on: aws-debian-runner-1
-#    steps:
-#      - name: Checkout repository
-#        uses: actions/checkout@v2
-#
-#      - name: Set up and run tests in a virtual environment
-#        shell: bash
-#        run: |
-#          # Create a virtual environment in a directory called venv
-#          python3 -m venv venv
-#
-#          # Activate the virtual environment
-#          source venv/bin/activate
-#
-#          # Upgrade pip and install dependencies
-#          pip install --upgrade pip
-#          pip install flask pytest pymongo
-#
-#          # Run unit tests
-#          pytest tests/
+      - name: Build Test Docker Image
+        run: |
+          mv .dockerignore .dockerignore.temp
+          docker build -t $DOCKERHUB_NAMESPACE/$DOCKERHUB_TEST_REPOSITORY:$IMAGE_VERSION -f DockerfileTest .
+          mv .dockerignore.temp .dockerignore
+
+      - name: Push Test Docker Image
+        run: docker push $DOCKERHUB_NAMESPACE/$DOCKERHUB_TEST_REPOSITORY:$IMAGE_VERSION
+
+  # Stage 2: Unit testing the application
+  test:
+    name: Unit testing of the application
+    needs: [build-docker-image]
+    runs-on: self-hosted # Using the self-hosted runner
+    environment: development
+    steps:
+      # This GitHub action handles the authentication with an artifact registry
+      - name: Log in to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Pull Test Docker Image
+        run: docker pull $DOCKERHUB_NAMESPACE/$DOCKERHUB_TEST_REPOSITORY:$IMAGE_VERSION
+
+      - name: Run Test Docker Image
+        run: |
+          docker run --rm \
+            -e MONGODB_USERNAME=${{ secrets.MONGODB_USERNAME }} \
+            -e MONGODB_PASSWORD=${{ secrets.MONGODB_PASSWORD }} \
+            $DOCKERHUB_NAMESPACE/$DOCKERHUB_TEST_REPOSITORY:$IMAGE_VERSION
 
   # Stage 3: Deploy the Docker image
   deploy-docker-image:
