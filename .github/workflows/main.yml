@@ -7,8 +7,9 @@ on:
 
 # Global variables
 env:
-  DOCKERHUB_NAMESPACE: beljjvalentin  # replace this value with your own namespace
-  DOCKERHUB_REPOSITORY: flask  # replace this value with your own repository
+  DOCKERHUB_NAMESPACE: beljjvalentin
+  DOCKERHUB_REPOSITORY: flask
+  DOCKERHUB_TEST_REPOSITORY: flask-test
   IMAGE_VERSION: v1.0.0
 
 jobs:
