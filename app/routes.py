@@ -12,6 +12,10 @@ def home():
     return render_template("index.html")
     # return "This is the index page!"
 
+@flask_app.route('/home', methods=['GET'])
+def home2():
+    return render_template('index.html')
+
 # @flask_app.route("/")
 # def index():
 #     return render_template("index.html")
