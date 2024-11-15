@@ -1,4 +1,5 @@
-from app import flask_app, products_collection
+from app import flask_app
+from database import db, products_collection
 from flask import render_template
 
 @flask_app.route("/index")
