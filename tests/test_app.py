@@ -38,26 +38,26 @@ class FlaskTestCase(unittest.TestCase):
         # Checking that the response includes 'products' data (non-empty if data exists)
         self.assertIn(b'products', response.data)
 
-        # Test 3: Database Write Operation - Inserting a document and verifying if it exists
-        def test_mongodb_write_operation(self):
-            test_product = {
-                "name": "Test Product",
-                "tag": "test",
-                "price": 99.99,
-                "image_path": "/path/to/image"
-            }
+    # Test 3: Database Write Operation - Inserting a document and verifying if it exists
+    def test_mongodb_write_operation(self):
+        test_product = {
+            "name": "Test Product",
+            "tag": "test",
+            "price": 99.99,
+            "image_path": "/path/to/image"
+        }
 
-            # Inserting test document
-            insert_result = products_collection.insert_one(test_product)
-            self.assertIsNotNone(insert_result.inserted_id, "Document insertion failed")
+        # Inserting test document
+        insert_result = products_collection.insert_one(test_product)
+        self.assertIsNotNone(insert_result.inserted_id, "Document insertion failed")
 
-            # Calling the database to verify the document was inserted
-            fetched_product = products_collection.find_one({"_id": insert_result.inserted_id})
-            self.assertIsNotNone(fetched_product, "Inserted document not found in the collection")
-            self.assertEqual(fetched_product["name"], "Test Product")
-            self.assertEqual(fetched_product["tag"], "test")
-            self.assertEqual(fetched_product["price"], 99.99)
-            self.assertEqual(fetched_product["image_path"], "/path/to/image")
+        # Calling the database to verify the document was inserted
+        fetched_product = products_collection.find_one({"_id": insert_result.inserted_id})
+        self.assertIsNotNone(fetched_product, "Inserted document not found in the collection")
+        self.assertEqual(fetched_product["name"], "Test Product")
+        self.assertEqual(fetched_product["tag"], "test")
+        self.assertEqual(fetched_product["price"], 99.99)
+        self.assertEqual(fetched_product["image_path"], "/path/to/image")
 
-            # Cleaning up database by deleting the test document
-            products_collection.delete_one({"_id": insert_result.inserted_id})
+        # Cleaning up database by deleting the test document
+        products_collection.delete_one({"_id": insert_result.inserted_id})
