@@ -43,7 +43,7 @@ class FlaskTestCase(unittest.TestCase):
         test_product = {
             "name": "Test Product",
             "tag": "test",
-            "price": 99.99,
+            "price": 123.99,
             "image_path": "/path/to/image"
         }
 
@@ -56,7 +56,7 @@ class FlaskTestCase(unittest.TestCase):
         self.assertIsNotNone(fetched_product, "Inserted document not found in the collection")
         self.assertEqual(fetched_product["name"], "Test Product")
         self.assertEqual(fetched_product["tag"], "test")
-        self.assertEqual(fetched_product["price"], 99.99)
+        self.assertEqual(fetched_product["price"], 123.99)
         self.assertEqual(fetched_product["image_path"], "/path/to/image")
 
         # Cleaning up database by deleting the test document
